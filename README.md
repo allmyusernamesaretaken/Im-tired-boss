@@ -63,7 +63,7 @@ The extension only talks to `claude.ai`, using your existing login. It does not 
 
 ## Install
 
-Not yet on addons.mozilla.org. To try it from source, see Development below.
+Install it from addons.mozilla.org: **[I'm Tired, Boss for Firefox](https://addons.mozilla.org/firefox/addon/im-tired-boss/)**. To build it from source, see Development below.
 
 ## Development
 
