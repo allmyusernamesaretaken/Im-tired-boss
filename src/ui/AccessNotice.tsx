@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
+import { t } from '../shared/i18n';
 import { canManagePermissions, hasClaudeAccess, requestClaudeAccess } from '../shared/permissions';
 
 interface Props {
@@ -39,8 +40,8 @@ export function AccessNotice({ mode }: Props) {
 
   return (
     <div class="notice">
-      <p>To read your usage, this extension needs access to claude.ai.</p>
-      <button onClick={onClick}>Grant access</button>
+      <p>{t('accessNeeded', 'To read your usage, this extension needs access to claude.ai.')}</p>
+      <button onClick={onClick}>{t('accessGrant', 'Grant access')}</button>
     </div>
   );
 }

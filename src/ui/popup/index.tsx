@@ -2,7 +2,7 @@ import { mount } from '../mount';
 import { AccessNotice } from '../AccessNotice';
 import { Diagnostics } from '../Diagnostics';
 import { useNow, useSettings, useSnapshot } from '../hooks';
-import { t } from '../i18n';
+import { t } from '../../shared/i18n';
 import { Preview } from '../Preview';
 import { StatusLine } from '../StatusLine';
 import { UpdateNow } from '../UpdateNow';

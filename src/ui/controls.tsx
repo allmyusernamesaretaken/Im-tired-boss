@@ -4,7 +4,7 @@
 
 import type { ComponentChildren } from 'preact';
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
-import { t } from './i18n';
+import { t } from '../shared/i18n';
 
 function CircleArrow() {
   return (

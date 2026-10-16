@@ -47,7 +47,7 @@ The goal was to make the usage bars feel like part of claude.ai itself, not like
   </tr>
   <tr>
     <td align="center" width="50%">
-      <img src="docs/screenshots/bars-closeup.png" width="297" alt="Close-up of the bars with threshold colors"><br>
+      <img src="docs/screenshots/bars-closeup.png" width="282" alt="Close-up of the bars with threshold colors"><br>
       <sub>Optional color change above usage thresholds</sub>
     </td>
     <td align="center" width="50%">

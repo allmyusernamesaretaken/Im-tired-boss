@@ -45,7 +45,7 @@
     "message": "Bars"
   },
   "barName": {
-    "message": "name"
+    "message": "Name"
   },
   "sectionText": {
     "message": "Text"
@@ -220,5 +220,20 @@
   },
   "updateNoTab": {
     "message": "Open claude.ai to update."
+  },
+  "barTooltip": {
+    "message": "{name}: resets {time} (in {left})"
+  },
+  "accessNeeded": {
+    "message": "To read your usage, this extension needs access to claude.ai."
+  },
+  "accessGrant": {
+    "message": "Grant access"
+  },
+  "diagnostics": {
+    "message": "Diagnostics"
+  },
+  "onboardingTitle": {
+    "message": "Welcome to I'm Tired, Boss"
   }
 }

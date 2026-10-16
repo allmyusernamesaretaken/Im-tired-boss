@@ -45,7 +45,7 @@ beforeEach(() => {
 
 describe('fetcher', () => {
   it('backs off org lookups while logged out, even with no org known yet', async () => {
-    const { tick, NO_ORG_KEY } = await load();
+    const { checkUsage: tick, NO_ORG_KEY } = await load();
     fetchMock.mockImplementation(() => json({}, 401));
     await tick();
     await tick();
@@ -57,7 +57,7 @@ describe('fetcher', () => {
   });
 
   it('resolves the org again when claude.ai switches it without a reload', async () => {
-    const { tick } = await load();
+    const { checkUsage: tick } = await load();
     const orgs = [
       { uuid: ORG_A, capabilities: ['chat'] },
       { uuid: ORG_B, capabilities: ['chat'] },
@@ -76,5 +76,17 @@ describe('fetcher', () => {
       '/api/organizations',
       `/api/organizations/${ORG_B}/usage`,
     ]);
+  });
+  it('"Update now" waits for a running check, then fetches anyway', async () => {
+    const { checkUsage: tick, refreshNow } = await load();
+    fetchMock.mockImplementation((path) =>
+      path === '/api/organizations' ? json([{ uuid: ORG_A, capabilities: ['chat'] }]) : json(USAGE),
+    );
+    setCookie(ORG_A);
+    await tick();
+    fetchMock.mockClear();
+    // A regular check finds fresh data and skips; "Update now" must still fetch.
+    await Promise.all([tick(), refreshNow()]);
+    expect(paths()).toEqual([`/api/organizations/${ORG_A}/usage`]);
   });
 });

@@ -2,7 +2,7 @@
 
 import { describeStatus } from '../shared/status';
 import { useNow, useUsageEntry } from './hooks';
-import { t } from './i18n';
+import { t } from '../shared/i18n';
 
 export function StatusLine() {
   const entry = useUsageEntry();

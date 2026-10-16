@@ -3,7 +3,7 @@
 
 import { AccessNotice } from './AccessNotice';
 import { useNow, useSettings, useSnapshot } from './hooks';
-import { t } from './i18n';
+import { t } from '../shared/i18n';
 import { Preview } from './Preview';
 import { SettingsForm } from './SettingsForm';
 import { StatusLine } from './StatusLine';

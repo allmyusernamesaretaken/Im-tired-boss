@@ -1,10 +1,13 @@
 {
   "name": "im-tired-boss",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A usage meter for Claude: shows your plan limits as quiet bars right inside claude.ai.",
   "private": true,
   "type": "module",
   "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/allmyusernamesaretaken/Im-tired-boss.git"

@@ -16,6 +16,8 @@ let orgId: string | null = null;
 /** The lastActiveOrg cookie when orgId was resolved; a change means the user switched org. */
 let orgCookie: string | undefined;
 let busy = false;
+/** The check in progress, so "Update now" can wait for it instead of returning early. */
+let running: Promise<void> | null = null;
 
 /** Storage key of this tab's organization, once known. */
 export function currentOrgKey(): string | null {
@@ -47,8 +49,8 @@ async function getJson(path: string): Promise<JsonResult> {
   }
 }
 
-/** `force` ("Update now") skips the visibility and staleness checks. Exported for tests. */
-export async function tick(force = false): Promise<void> {
+/** `force` ("Update now") skips the visibility and staleness checks. */
+async function tick(force = false): Promise<void> {
   if (busy || (!force && document.visibilityState !== 'visible')) return;
   busy = true;
   try {
@@ -94,14 +96,26 @@ export async function tick(force = false): Promise<void> {
 
 /** Runs a check; unexpected errors are logged by name and message only, never with data. */
 function safeTick(force = false): Promise<void> {
-  return tick(force).catch((err: unknown) => {
+  const check = tick(force).catch((err: unknown) => {
     const e = err instanceof Error ? err : new Error(String(err));
     console.warn(`[I'm Tired, Boss] usage check failed: ${e.name}: ${e.message}`);
   });
+  running = check;
+  void check.finally(() => {
+    if (running === check) running = null;
+  });
+  return check;
+}
+
+/** A regular check, as the timer runs it. Exported for tests. */
+export function checkUsage(): Promise<void> {
+  return safeTick();
 }
 
 /** Fetches right away ("Update now"); resolves once the result is stored. */
-export function refreshNow(): Promise<void> {
+export async function refreshNow(): Promise<void> {
+  // A running check may have skipped the fetch as "not stale yet": wait, then force one.
+  if (running) await running;
   return safeTick(true);
 }
 

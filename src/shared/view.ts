@@ -1,6 +1,7 @@
 // Turns settings + usage into the rows the renderer draws. Pure.
 
 import type { ExtraUsage, UsageSnapshot } from './model';
+import { t } from './i18n';
 import { resolveColor, resolveTemplate } from './resolve';
 import { BAR_IDS, type BarId, type Settings } from './settings';
 import { formatLeft, renderTemplate } from './template';
@@ -55,7 +56,15 @@ export function buildRows(
     const template = resolveTemplate(settings, id);
     const ctx = { name, pct, resetsAt, spent, now, locale };
     const title = resetsAt
-      ? `${name}: resets ${resetsAt.toLocaleString(locale, { weekday: 'short', hour: 'numeric', minute: '2-digit' })} (in ${formatLeft(resetsAt.getTime() - now.getTime())})`
+      ? fill(t('barTooltip', '{name}: resets {time} (in {left})'), {
+          name,
+          time: resetsAt.toLocaleString(locale, {
+            weekday: 'short',
+            hour: 'numeric',
+            minute: '2-digit',
+          }),
+          left: formatLeft(resetsAt.getTime() - now.getTime()),
+        })
       : spent
         ? `${name}: ${spent}`
         : name;
@@ -72,4 +81,9 @@ export function buildRows(
     });
   }
   return rows;
+}
+
+/** Fills {key} placeholders in a translated string. */
+function fill(text: string, values: Record<string, string>): string {
+  return text.replace(/\{(\w+)\}/g, (match, key: string) => values[key] ?? match);
 }

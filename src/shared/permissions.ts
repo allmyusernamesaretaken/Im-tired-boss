@@ -1,4 +1,5 @@
-// Host access to claude.ai is optional in Firefox MV3 and must be granted by the user.
+// Since Firefox 127, host access is granted at install, but the user can revoke it
+// in about:addons; the onboarding and popup then ask for it again.
 // Note: the permissions API is not available everywhere, e.g. not in our options
 // page while it is embedded in claude.ai's settings dialog.
 

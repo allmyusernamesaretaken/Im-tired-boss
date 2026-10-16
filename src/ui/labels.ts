@@ -1,5 +1,5 @@
 import type { BarId } from '../shared/settings';
-import { t } from './i18n';
+import { t } from '../shared/i18n';
 
 const BAR_LABELS: Record<BarId, [key: string, fallback: string]> = {
   five_hour: ['bar5h', '5-hour window'],

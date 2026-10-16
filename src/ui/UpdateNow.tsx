@@ -5,7 +5,7 @@
 
 import { createContext } from 'preact';
 import { useContext, useState } from 'preact/hooks';
-import { t } from './i18n';
+import { t } from '../shared/i18n';
 
 /** Provided by the embedded settings in claude.ai to fetch without messaging. */
 export const DirectRefresh = createContext<(() => Promise<void>) | null>(null);

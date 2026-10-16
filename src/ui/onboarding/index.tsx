@@ -1,6 +1,6 @@
 import { mount } from '../mount';
 import { AccessNotice } from '../AccessNotice';
-import { t } from '../i18n';
+import { t } from '../../shared/i18n';
 
 const SETTINGS_URL = 'https://claude.ai/new#settings/im-tired-boss';
 

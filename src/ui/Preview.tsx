@@ -3,7 +3,7 @@
 import type { UsageSnapshot } from '../shared/model';
 import type { Settings } from '../shared/settings';
 import { buildRows } from '../shared/view';
-import { t } from './i18n';
+import { t } from '../shared/i18n';
 
 export function Preview(props: { settings: Settings; snapshot: UsageSnapshot | null; now: Date }) {
   const rows = buildRows(props.settings, props.snapshot, props.now);

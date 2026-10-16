@@ -100,7 +100,6 @@ const color = (v: unknown, d: string): string => (typeof v === 'string' && HEX.t
 const percent = (v: unknown, d: number): number =>
   typeof v === 'number' && Number.isInteger(v) && v >= 1 && v <= 100 ? v : d;
 
-/** Returns valid settings for any input (stored data, partial objects, garbage). */
 /**
  * Upgrades stored settings from older versions before validation.
  * v1 → v2: the default bar color changed from #d97757 to the brand color #c6613f;
@@ -118,6 +117,7 @@ export function migrateSettings(raw: unknown): unknown {
   return raw;
 }
 
+/** Returns valid settings for any input (stored data, partial objects, garbage). */
 export function normalizeSettings(raw: unknown): Settings {
   const r = obj(migrateSettings(raw));
   const d = DEFAULTS;

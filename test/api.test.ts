@@ -20,7 +20,7 @@ describe('parseUsage', () => {
     const snapshot = parseUsage(fixture);
     expect(snapshot?.limits.seven_day_opus).toBeNull();
     expect(snapshot?.limits.seven_day_cowork).toBeNull();
-    expect(snapshot?.limits).not.toHaveProperty('iguana_necktie');
+    expect(snapshot?.limits).not.toHaveProperty('some_future_limit');
   });
 
   it('leaves out limits the response does not mention', () => {

@@ -13,7 +13,7 @@ import {
 import { enableExpert } from '../shared/resolve';
 import { DebouncedText, ResetAll, Row, Section, Segmented, Switch } from './controls';
 import { ExpertForm } from './ExpertForm';
-import { t } from './i18n';
+import { t } from '../shared/i18n';
 import { barLabel } from './labels';
 
 type Update = (change: (s: Settings) => Settings) => void;
@@ -77,7 +77,7 @@ export function SettingsForm(props: {
                 value={s.bars[id].name}
                 maxLength={MAX_NAME_LENGTH}
                 placeholder={DEFAULTS.bars[id].name}
-                ariaLabel={`${label}: ${t('barName', 'name')}`}
+                ariaLabel={`${label}: ${t('barName', 'Name')}`}
                 disabled={!!reason}
                 class="field short"
                 onCommit={(name) =>
@@ -162,7 +162,7 @@ export function SettingsForm(props: {
             class="color"
             aria-label={t('barColor', 'Bar color')}
             value={s.color.base}
-            onInput={(e) => {
+            onChange={(e) => {
               const value = e.currentTarget.value;
               update((c) => ((c.color.base = value), c));
             }}
@@ -204,7 +204,7 @@ export function SettingsForm(props: {
                 class="color"
                 aria-label={t('thresholdColor', 'Threshold color')}
                 value={step.color}
-                onInput={(e) => {
+                onChange={(e) => {
                   const value = e.currentTarget.value;
                   update((c) => ((c.color.steps[i as 0 | 1].color = value), c));
                 }}

@@ -12,7 +12,7 @@ import {
   type Settings,
 } from '../shared/settings';
 import { DebouncedText, ResetIcon, Row, Section } from './controls';
-import { t } from './i18n';
+import { t } from '../shared/i18n';
 import { barLabel } from './labels';
 
 type Update = (change: (s: Settings) => Settings) => void;
@@ -215,7 +215,7 @@ export function ExpertForm(props: {
                       class="color"
                       aria-label={t('barColor', 'Bar color')}
                       value={own.color ?? s.color.base}
-                      onInput={(e) => {
+                      onChange={(e) => {
                         const value = e.currentTarget.value;
                         update((c) => ((c.expert.perBar[id].color = value), c));
                       }}

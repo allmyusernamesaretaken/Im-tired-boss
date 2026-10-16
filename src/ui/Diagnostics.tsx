@@ -1,6 +1,7 @@
 // Collapsed diagnostics section: fetch status and which sidebar slots were found.
 // Shows no usage data and no IDs, so it can be pasted into bug reports.
 
+import { t } from '../shared/i18n';
 import { useEffect, useState } from 'preact/hooks';
 import type { OrgUsage } from '../shared/model';
 import { DIAGNOSTICS_KEY, readDiagnostics, type Diagnostics as Diag } from '../storage/diagnostics';
@@ -44,7 +45,7 @@ export function Diagnostics() {
   return (
     <details style={{ marginTop: '10px' }}>
       <summary class="muted" style={{ cursor: 'pointer' }}>
-        Diagnostics
+        {t('diagnostics', 'Diagnostics')}
       </summary>
       <pre class="muted" style={{ fontSize: '11px', whiteSpace: 'pre-wrap', margin: '6px 0 0' }}>
         {lines.join('\n')}

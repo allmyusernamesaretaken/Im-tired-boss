@@ -19,15 +19,6 @@
   "seven_day_opus": null,
   "seven_day_sonnet": null,
   "seven_day_cowork": null,
-  "tangelo": null,
-  "iguana_necktie": {
-    "utilization": 0,
-    "resets_at": "2026-11-05T07:59:00+00:00",
-    "limit_dollars": 100,
-    "used_dollars": 0,
-    "remaining_dollars": 100,
-    "locked_reason": null
-  },
   "extra_usage": {
     "is_enabled": false,
     "monthly_limit": 10000,
@@ -56,5 +47,13 @@
       "scope": null,
       "is_active": false
     }
-  ]
+  ],
+  "some_future_limit": {
+    "utilization": 0,
+    "resets_at": "2026-11-05T07:59:00+00:00",
+    "limit_dollars": 100,
+    "used_dollars": 0,
+    "remaining_dollars": 100,
+    "locked_reason": null
+  }
 }

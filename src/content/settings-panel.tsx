@@ -9,9 +9,16 @@ import { DirectRefresh } from '../ui/UpdateNow';
 import { refreshNow } from './fetcher';
 import styles from '../ui/styles.css';
 
+/** Closed, so claude.ai's scripts cannot read or drive the settings. */
+const shadows = new WeakMap<HTMLElement, ShadowRoot>();
+
 /** Mounts the settings into `host` and returns a function that unmounts them. */
 export function mountSettingsPanel(host: HTMLElement): () => void {
-  const shadow = host.shadowRoot ?? host.attachShadow({ mode: 'open' });
+  let shadow = shadows.get(host);
+  if (!shadow) {
+    shadow = host.attachShadow({ mode: 'closed' });
+    shadows.set(host, shadow);
+  }
   const style = document.createElement('style');
   style.textContent = styles;
   const root = document.createElement('div');
