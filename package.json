@@ -1,0 +1,44 @@
+{
+  "name": "im-tired-boss",
+  "version": "1.0.0",
+  "description": "A usage meter for Claude: shows your plan limits as quiet bars right inside claude.ai.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allmyusernamesaretaken/Im-tired-boss.git"
+  },
+  "bugs": {
+    "url": "https://github.com/allmyusernamesaretaken/Im-tired-boss/issues"
+  },
+  "homepage": "https://github.com/allmyusernamesaretaken/Im-tired-boss#readme",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "start": "npm run build && web-ext run --source-dir dist --start-url https://claude.ai",
+    "typecheck": "tsc",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint . && web-ext lint --source-dir dist",
+    "format": "prettier --write . --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .git/info/exclude",
+    "format:check": "prettier --check . --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .git/info/exclude",
+    "package": "node build.mjs --clean && web-ext build --source-dir dist --artifacts-dir web-ext-artifacts --overwrite-dest",
+    "source": "node -e \"require('fs').mkdirSync('web-ext-artifacts',{recursive:true})\" && git archive --format zip -o web-ext-artifacts/im-tired-boss-source.zip HEAD"
+  },
+  "dependencies": {
+    "preact": "^11.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/firefox-webext-browser": "^143.0.1",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "happy-dom": "^21.0.1",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vitest": "^5.0.4",
+    "web-ext": "^10.7.0"
+  }
+}

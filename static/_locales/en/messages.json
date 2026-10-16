@@ -1,0 +1,224 @@
+{
+  "extensionName": {
+    "message": "I'm Tired, Boss – A usage meter for Claude"
+  },
+  "extensionShortName": {
+    "message": "I'm Tired, Boss"
+  },
+  "extensionDescription": {
+    "message": "Shows your Claude plan limits (5-hour window, weekly limits) as quiet bars right inside claude.ai. Not affiliated with Anthropic."
+  },
+  "restoreDefaults": {
+    "message": "Restore defaults"
+  },
+  "resetAllConfirm": {
+    "message": "Click again to reset everything"
+  },
+  "resetAll": {
+    "message": "Reset all settings"
+  },
+  "tagline": {
+    "message": "A usage meter for Claude. Not affiliated with Anthropic."
+  },
+  "openSettings": {
+    "message": "Settings"
+  },
+  "noBars": {
+    "message": "No bars selected."
+  },
+  "notActive": {
+    "message": "Not active"
+  },
+  "notInPlan": {
+    "message": "Not in your plan"
+  },
+  "sectionPosition": {
+    "message": "Position"
+  },
+  "positionTop": {
+    "message": "Top"
+  },
+  "positionBottom": {
+    "message": "Bottom"
+  },
+  "sectionBars": {
+    "message": "Bars"
+  },
+  "barName": {
+    "message": "name"
+  },
+  "sectionText": {
+    "message": "Text"
+  },
+  "textName": {
+    "message": "Name"
+  },
+  "textPercent": {
+    "message": "Percent"
+  },
+  "textReset": {
+    "message": "Reset"
+  },
+  "sectionResetAs": {
+    "message": "Show reset as"
+  },
+  "resetAsTime": {
+    "message": "Time"
+  },
+  "resetAsLeft": {
+    "message": "Time left"
+  },
+  "sectionTimeFormat": {
+    "message": "Time format"
+  },
+  "timeSystem": {
+    "message": "System"
+  },
+  "sectionColor": {
+    "message": "Color"
+  },
+  "barColor": {
+    "message": "Bar color"
+  },
+  "colorByUsage": {
+    "message": "Change color by usage"
+  },
+  "thresholdColor": {
+    "message": "Threshold color"
+  },
+  "from": {
+    "message": "from"
+  },
+  "thresholdPercent": {
+    "message": "Threshold in percent"
+  },
+  "sectionMore": {
+    "message": "More"
+  },
+  "showBadge": {
+    "message": "Toolbar badge"
+  },
+  "positionTopDesc": {
+    "message": "Below the Claude logo"
+  },
+  "positionBottomDesc": {
+    "message": "Above your profile"
+  },
+  "textNameDesc": {
+    "message": "For example \"5h\""
+  },
+  "textResetDesc": {
+    "message": "On the right"
+  },
+  "colorByUsageDesc": {
+    "message": "Switch to another color above a threshold"
+  },
+  "thresholdWarn": {
+    "message": "Warning"
+  },
+  "thresholdCritical": {
+    "message": "Critical"
+  },
+  "showBadgeDesc": {
+    "message": "5-hour usage on the extension icon"
+  },
+  "menuSettings": {
+    "message": "I'm Tired, Boss settings"
+  },
+  "contextMenu": {
+    "message": "Right-click menu"
+  },
+  "contextMenuDesc": {
+    "message": "Right-click the bars to open these settings"
+  },
+  "sectionAllBars": {
+    "message": "All bars"
+  },
+  "templateHelp": {
+    "message": "Templates for the text above each bar, left and right."
+  },
+  "templateHelpLink": {
+    "message": "All placeholders"
+  },
+  "templateLeft": {
+    "message": "Left"
+  },
+  "templateRight": {
+    "message": "Right"
+  },
+  "sectionPerBar": {
+    "message": "Per bar"
+  },
+  "overridesAll": {
+    "message": "Overrides All bars"
+  },
+  "inheritsColor": {
+    "message": "Uses the default color"
+  },
+  "useDefault": {
+    "message": "Use default"
+  },
+  "sectionExpert": {
+    "message": "Expert mode"
+  },
+  "expertMode": {
+    "message": "Expert mode"
+  },
+  "expertModeDesc": {
+    "message": "Write your own templates for the text above the bars"
+  },
+  "onboardingHowTitle": {
+    "message": "How it works"
+  },
+  "onboardingBarsTitle": {
+    "message": "Bars in the sidebar"
+  },
+  "onboardingBarsDesc": {
+    "message": "Open claude.ai. Your 5-hour and weekly limits appear as thin bars below the Claude logo. Usage from Claude Code counts towards the same limits."
+  },
+  "onboardingSettingsTitle": {
+    "message": "Settings"
+  },
+  "onboardingSettingsDesc": {
+    "message": "Right-click the bars, use the toolbar icon, or find \"I'm Tired, Boss\" in claude.ai's settings below Usage."
+  },
+  "onboardingPrivacyTitle": {
+    "message": "Privacy"
+  },
+  "onboardingPrivacyDesc": {
+    "message": "The extension only talks to claude.ai, using your existing login. Nothing is collected or sent anywhere else."
+  },
+  "onboardingOpen": {
+    "message": "Open claude.ai"
+  },
+  "updatedAgo": {
+    "message": "Updated {ago} ago."
+  },
+  "statusEmpty": {
+    "message": "Open claude.ai to load your usage."
+  },
+  "statusOk": {
+    "message": "Up to date."
+  },
+  "statusStale": {
+    "message": "Open claude.ai to refresh."
+  },
+  "statusLoggedOut": {
+    "message": "Not logged in to claude.ai."
+  },
+  "statusApiChanged": {
+    "message": "claude.ai changed how it reports usage. The extension needs an update."
+  },
+  "statusNetwork": {
+    "message": "Could not reach claude.ai. Retrying automatically."
+  },
+  "updating": {
+    "message": "Updating…"
+  },
+  "updateNow": {
+    "message": "Update now"
+  },
+  "updateNoTab": {
+    "message": "Open claude.ai to update."
+  }
+}
