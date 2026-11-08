@@ -17,6 +17,8 @@ The goal was to make the usage bars feel like part of claude.ai itself, not like
 
 - Bars below the Claude logo and/or above your profile, styled with claude.ai's own font and colors (light and dark)
 - Text above each bar: name, percent and reset time or time left, in your system's time format or 12h/24h
+- Hover the bars for the last update time, "Update now" and a shortcut to the settings
+- Works with Firefox containers: each tab shows the account it is logged in to
 - Optional color change above usage thresholds
 - Settings right inside claude.ai's settings dialog (below "Usage"), via right-click on the bars, or via the toolbar icon
 - Expert mode with your own templates, e.g. `{name} · {pct}%` and `{reset:EEE HH:mm}` (Unicode LDML patterns)

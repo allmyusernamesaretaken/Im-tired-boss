@@ -81,6 +81,9 @@ browser.runtime.onMessage.addListener((message: unknown, sender) => {
   if (message.type === 'openHelp') {
     void browser.tabs.create({ url: browser.runtime.getURL('ui/help.html') });
   }
+  if (message.type === 'tabOrg' && sender.tab?.id !== undefined) {
+    void updateBadge({ tabId: sender.tab.id, key: message.key });
+  }
 });
 
 browser.menus.onClicked.addListener((info, tab) => {
@@ -92,16 +95,29 @@ function openOnboarding(): Promise<browser.tabs.Tab> {
   return browser.tabs.create({ url: browser.runtime.getURL('ui/onboarding.html') });
 }
 
-/** Badge shows the 5-hour window, the limit you hit first. */
-async function updateBadge(): Promise<void> {
+/**
+ * Badge shows the 5-hour window, the limit you hit first. Without `tab` it sets
+ * the default (most recently updated org). claude.ai tabs report their own org,
+ * which may differ per container, and get a badge for just that tab.
+ */
+async function updateBadge(tab?: { tabId: number; key: string }): Promise<void> {
   const [settings, { store, lastOrg }] = await Promise.all([readSettings(), readUsage()]);
-  const limit = lastOrg ? store[lastOrg]?.snapshot?.limits.five_hour : undefined;
-  if (!settings.showBadge || !limit || limit.utilization === null) {
-    await browser.action.setBadgeText({ text: '' });
-    return;
+  const key = tab ? tab.key : lastOrg;
+  const limit = key ? store[key]?.snapshot?.limits.five_hour : undefined;
+  const target = tab ? { tabId: tab.tabId } : {};
+  try {
+    if (!settings.showBadge || !limit || limit.utilization === null) {
+      await browser.action.setBadgeText({ ...target, text: '' });
+      return;
+    }
+    const pct = limit.utilization;
+    await browser.action.setBadgeText({ ...target, text: String(Math.round(pct)) });
+    await browser.action.setBadgeBackgroundColor({
+      ...target,
+      color: resolveColor(settings, 'five_hour', pct),
+    });
+    await browser.action.setBadgeTextColor({ ...target, color: '#ffffff' });
+  } catch {
+    // The tab was closed in the meantime.
   }
-  const pct = limit.utilization;
-  await browser.action.setBadgeText({ text: String(Math.round(pct)) });
-  await browser.action.setBadgeBackgroundColor({ color: resolveColor(settings, 'five_hour', pct) });
-  await browser.action.setBadgeTextColor({ color: '#ffffff' });
 }

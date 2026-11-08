@@ -15,6 +15,7 @@ Locally in Firefox (`storage.local`), and only there:
 - Your settings for the extension
 - The latest usage values (percentages, reset times, extra usage amounts) per organization, under a hash of the organization ID instead of the ID itself
 - Which places in the sidebar were found (for the diagnostics in the popup)
+- Which sections of the settings are expanded
 
 In claude.ai's `sessionStorage` (cleared when the tab closes), two flags remember that the extension's settings entry should open or stay open across a reload: `itb-settings-request` and `itb-settings-open`.
 

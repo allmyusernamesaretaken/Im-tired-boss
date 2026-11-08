@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-08
+
+### Added
+
+- Hovering the bars shows the last update time, an "Update now" button and a gear that opens the settings
+- Settings sections can be collapsed; the extension remembers which ones are open
+
+### Fixed
+
+- With Firefox containers logged in to different accounts, each tab showed the usage of whichever account was updated last. Bars, popup, badge and settings now show the account of their own tab
+- Reloading claude.ai after closing the settings opened them again
+
 ## [1.0.2] - 2026-10-16
 
 First public release on addons.mozilla.org. No changes to the add-on itself; 1.0.1 was only distributed unlisted.
@@ -39,7 +51,8 @@ First release.
 - Usage is fetched only from visible claude.ai tabs and at most every 5 minutes, with validation of the response and backoff on errors; data is stored locally per organization under a hashed ID
 - UI strings in `_locales` for future translations
 
-[Unreleased]: https://github.com/allmyusernamesaretaken/Im-tired-boss/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/allmyusernamesaretaken/Im-tired-boss/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/allmyusernamesaretaken/Im-tired-boss/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/allmyusernamesaretaken/Im-tired-boss/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/allmyusernamesaretaken/Im-tired-boss/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/allmyusernamesaretaken/Im-tired-boss/releases/tag/v1.0.0

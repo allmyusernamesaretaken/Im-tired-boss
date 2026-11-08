@@ -5,6 +5,7 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../shared/i18n';
+import { readSections, writeSection } from '../storage/ui';
 
 function CircleArrow() {
   return (
@@ -33,18 +34,70 @@ export function ResetIcon({ onClick, label }: { onClick: () => void; label?: str
   );
 }
 
+/** Remembered expanded state of a section; falls back to `defaultOpen` without storage. */
+function useSectionOpen(id: string, defaultOpen: boolean): [boolean, (open: boolean) => void] {
+  const [open, setOpen] = useState(defaultOpen);
+  useEffect(() => {
+    let alive = true;
+    readSections()
+      .then((state) => {
+        if (alive && id in state) setOpen(state[id] as boolean);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [id]);
+  const change = (next: boolean) => {
+    setOpen(next);
+    writeSection(id, next).catch(() => {});
+  };
+  return [open, change];
+}
+
+/**
+ * A titled group of settings that can be folded. The content stays rendered
+ * (inert while folded), so folding never loses a half-typed value.
+ */
 export function Section(props: {
+  /** Stable id for remembering whether the section is expanded. */
+  id: string;
   title: string;
+  defaultOpen?: boolean;
   onReset?: () => void;
   children: ComponentChildren;
 }) {
+  const [open, setOpen] = useSectionOpen(props.id, props.defaultOpen ?? true);
+  const bodyId = `section-${props.id}`;
   return (
-    <section class="section">
+    <section class={open ? 'section open' : 'section'}>
       <div class="section-head">
-        <h2>{props.title}</h2>
+        <button
+          type="button"
+          class="section-toggle"
+          aria-expanded={open}
+          aria-controls={bodyId}
+          onClick={() => setOpen(!open)}
+        >
+          <svg
+            class="section-chevron"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+          <h2>{props.title}</h2>
+        </button>
         {props.onReset && <ResetIcon onClick={props.onReset} />}
       </div>
-      <div class="group">{props.children}</div>
+      <div class="section-body" id={bodyId} inert={!open}>
+        <div class="group">{props.children}</div>
+      </div>
     </section>
   );
 }

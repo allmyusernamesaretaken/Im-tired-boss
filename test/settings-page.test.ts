@@ -89,6 +89,20 @@ describe('SettingsPage', () => {
     expect(sessionStorage.getItem('itb-settings-open')).toBeNull();
   });
 
+  it('drops our address when the dialog is closed, so a reload stays closed', () => {
+    const page = setup('#settings/usage');
+    navItem()!.querySelector('button')!.click();
+    expect(location.hash).toBe(SETTINGS_ROUTE);
+    // claude.ai closes the dialog but leaves the (for it unknown) hash alone.
+    document.querySelector('[role="dialog"]')!.remove();
+    page.ensure();
+    expect(location.hash).toBe('');
+    expect(sessionStorage.getItem('itb-settings-open')).toBeNull();
+    // A reload now does not reopen the settings.
+    expect(() => new SettingsPage(document)).not.toThrow();
+    expect(location.hash).toBe('');
+  });
+
   it('reopens after a reload even if claude.ai rewrote the hash', () => {
     sessionStorage.setItem('itb-settings-open', '1');
     setup('#settings/general');

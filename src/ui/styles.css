@@ -148,19 +148,78 @@ button {
 }
 
 /* --- Sections and rows (like claude.ai settings) ---------------------- */
+/* Foldable: a header row with a chevron, the body animates its height. */
+.form {
+  margin-top: 16px;
+}
 .section {
-  margin-top: 32px;
+  border-bottom: 1px solid var(--itb-border);
 }
 .section-head {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
+}
+.section-toggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.section-toggle:focus-visible {
+  outline: 2px solid var(--itb-accent, currentColor);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 .section-head h2 {
   margin: 0;
   font-size: var(--itb-size-heading);
   font-weight: 600;
+}
+.section-chevron {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--itb-text-muted);
+  transition: transform 0.15s;
+}
+.section-toggle:hover .section-chevron {
+  color: var(--itb-text);
+}
+.section.open .section-chevron {
+  transform: rotate(90deg);
+}
+.section-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+.section.open .section-body {
+  grid-template-rows: 1fr;
+}
+/* Clips while folded; the side padding keeps focus rings visible. */
+.section-body > .group {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
+.section.open .section-body > .group {
+  padding-bottom: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-chevron,
+  .section-body {
+    transition: none;
+  }
 }
 .setting {
   display: flex;

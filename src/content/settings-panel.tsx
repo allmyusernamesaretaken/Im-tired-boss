@@ -5,8 +5,11 @@
 import { render } from 'preact';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 import { SettingsApp } from '../ui/SettingsApp';
+import { UsageKey } from '../ui/hooks';
 import { DirectRefresh } from '../ui/UpdateNow';
-import { refreshNow } from './fetcher';
+import { displayOrgKey, refreshNow } from './fetcher';
+
+const ownKey = () => Promise.resolve(displayOrgKey());
 import styles from '../ui/styles.css';
 
 /** Closed, so claude.ai's scripts cannot read or drive the settings. */
@@ -26,7 +29,9 @@ export function mountSettingsPanel(host: HTMLElement): () => void {
   render(
     <ErrorBoundary>
       <DirectRefresh.Provider value={refreshNow}>
-        <SettingsApp embedded />
+        <UsageKey.Provider value={ownKey}>
+          <SettingsApp embedded />
+        </UsageKey.Provider>
       </DirectRefresh.Provider>
     </ErrorBoundary>,
     root,

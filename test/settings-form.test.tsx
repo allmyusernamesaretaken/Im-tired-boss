@@ -32,6 +32,30 @@ describe('settings UI', () => {
     expect(root.textContent).toContain('Not in your plan');
   });
 
+  it('folds sections, with content kept in place but inert', async () => {
+    const root = document.createElement('div');
+    render(
+      <SettingsForm settings={structuredClone(DEFAULTS)} snapshot={snapshot} update={() => {}} />,
+      root,
+    );
+    const toggle = (title: string) =>
+      Array.from(root.querySelectorAll<HTMLButtonElement>('.section-toggle')).find(
+        (b) => b.textContent === title,
+      )!;
+    const bars = toggle('Bars');
+    const color = toggle('Color');
+    expect(bars.getAttribute('aria-expanded')).toBe('true');
+    expect(color.getAttribute('aria-expanded')).toBe('false');
+    expect(root.textContent).toContain('Bar color');
+
+    bars.click();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(bars.getAttribute('aria-expanded')).toBe('false');
+    expect(bars.closest('.section')?.querySelector('.section-body')?.hasAttribute('inert')).toBe(
+      true,
+    );
+  });
+
   it('renders the expert form instead of the text section', () => {
     const root = document.createElement('div');
     render(

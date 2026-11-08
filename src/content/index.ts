@@ -1,11 +1,15 @@
 // Content script on claude.ai: fetches usage and keeps the bar blocks in the sidebar.
 
+import { t } from '../shared/i18n';
 import { isMessage } from '../shared/messages';
+import type { OrgUsage } from '../shared/model';
+import { describeStatus } from '../shared/status';
 import { buildRows } from '../shared/view';
 import { writeDiagnostics } from '../storage/diagnostics';
 import { readSettings, SETTINGS_KEY } from '../storage/settings';
 import { readUsage, USAGE_KEY } from '../storage/usage';
-import { currentOrgKey, refreshNow, startFetcher } from './fetcher';
+import type { FooterStatus } from './render';
+import { displayOrgKey, refreshNow, startFetcher } from './fetcher';
 import { Mounts } from './mounts';
 import { SettingsPage } from './settings-page';
 
@@ -15,10 +19,25 @@ const settingsPage = new SettingsPage(document);
 /** From the latest settings; decides whether a right-click on the bars offers our menu entry. */
 let contextMenuEnabled = true;
 
-const mounts = new Mounts(document, () => {
-  settingsPage.ensure();
-  void reportSlots();
-});
+const mounts = new Mounts(
+  document,
+  () => {
+    settingsPage.ensure();
+    void reportSlots();
+  },
+  { refresh: refreshNow, openSettings: () => settingsPage.open() },
+);
+
+/** The same text as the status line in the settings, e.g. "Updated 3 min ago." */
+function footerStatus(entry: OrgUsage | null, now: number): FooterStatus {
+  const status = describeStatus(entry, now);
+  const text = t(status.key, status.fallback);
+  const ago = status.ago ? t('updatedAgo', 'Updated {ago} ago.').replace('{ago}', status.ago) : '';
+  return {
+    text: status.kind === 'ok' ? ago : [text, ago].filter(Boolean).join(' '),
+    error: status.kind === 'error',
+  };
+}
 
 /** Whether a right-click target lies on our bars. Climbs out of shadow roots too. */
 function isOnBars(targetElementId: number): boolean {
@@ -34,14 +53,19 @@ function isOnBars(targetElementId: number): boolean {
 let lastDiagnostics = '';
 
 async function refresh(): Promise<void> {
-  const [settings, { store, lastOrg }] = await Promise.all([readSettings(), readUsage()]);
-  const key = currentOrgKey() ?? lastOrg;
-  const snapshot = key ? (store[key]?.snapshot ?? null) : null;
+  const [settings, { store }] = await Promise.all([readSettings(), readUsage()]);
+  // Only this tab's org: other tabs may be logged in to other accounts (containers).
+  const key = displayOrgKey();
+  const entry = store[key] ?? null;
+  const now = new Date();
   contextMenuEnabled = settings.contextMenu;
   mounts.render({
-    rows: buildRows(settings, snapshot, new Date()),
+    rows: buildRows(settings, entry?.snapshot ?? null, now),
+    status: footerStatus(entry, now.getTime()),
     positions: settings.positions,
   });
+  // The toolbar badge for this tab should show this tab's org too.
+  browser.runtime.sendMessage({ type: 'tabOrg', key }).catch(() => {});
   await reportSlots();
 }
 
@@ -68,6 +92,7 @@ browser.runtime.onMessage.addListener((message: unknown, sender) => {
   if (message.type === 'barsTarget') {
     return Promise.resolve(contextMenuEnabled && isOnBars(message.targetElementId));
   }
+  if (message.type === 'currentOrg') return Promise.resolve(displayOrgKey());
   if (message.type === 'openSettings') settingsPage.open();
   // Returning the promise lets the sender wait until the new values are stored.
   if (message.type === 'refreshNow') return refreshNow().then(() => true);

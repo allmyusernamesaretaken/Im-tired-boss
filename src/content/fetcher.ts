@@ -19,9 +19,21 @@ let busy = false;
 /** The check in progress, so "Update now" can wait for it instead of returning early. */
 let running: Promise<void> | null = null;
 
-/** Storage key of this tab's organization, once known. */
+/**
+ * Storage key of this tab's organization: the one claude.ai's `lastActiveOrg`
+ * cookie names if it is new, otherwise the resolved one. Never another tab's org:
+ * storage is shared by all tabs, also across containers with different accounts,
+ * but cookies are not. Null while neither is known.
+ */
 export function currentOrgKey(): string | null {
+  const cookie = readCookie('lastActiveOrg');
+  if (isOrgId(cookie) && (!orgId || cookie !== orgCookie)) return orgKey(cookie);
   return orgId ? orgKey(orgId) : null;
+}
+
+/** Like currentOrgKey, with the key for failed lookups while no org is known. */
+export function displayOrgKey(): string {
+  return currentOrgKey() ?? NO_ORG_KEY;
 }
 
 function readCookie(name: string): string | undefined {
@@ -55,24 +67,25 @@ async function tick(force = false): Promise<void> {
   busy = true;
   try {
     const now = Date.now();
-    const { store, lastOrg } = await readUsage();
+    const { store } = await readUsage();
 
     // claude.ai can switch the org without a reload: resolve it again right away.
     const cookie = readCookie('lastActiveOrg');
     const switched = !!orgId && cookie !== orgCookie && !!cookie && isOrgId(cookie);
     if (switched) orgId = null;
 
-    // Check staleness before any request, using the last known org if not resolved yet.
+    // Check staleness before any request, using this tab's org from the cookie if not
+    // resolved yet (never the org another tab or container updated last).
     // Failed lookups without a known org are stored under NO_ORG_KEY, so they back off too.
-    const knownKey = orgId ? orgKey(orgId) : lastOrg;
-    if (!force && !switched && knownKey && now < nextFetchAt(store[knownKey])) return;
+    const knownKey = displayOrgKey();
+    if (!force && !switched && now < nextFetchAt(store[knownKey])) return;
 
     if (!orgId) {
       const orgs = await getJson(ORGS_PATH);
       const picked = orgs.ok ? pickOrg(orgs.json, cookie) : null;
       if (!picked) {
         const status = orgs.ok ? 'apiChanged' : orgs.status;
-        await recordResult(knownKey ?? NO_ORG_KEY, { status }, now);
+        await recordResult(knownKey, { status }, now);
         return;
       }
       orgId = picked;

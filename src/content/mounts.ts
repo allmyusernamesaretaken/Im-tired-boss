@@ -3,13 +3,14 @@
 
 import type { PositionId } from '../shared/settings';
 import type { BarRow } from '../shared/view';
-import { createBarsView, type BarsView } from './render';
+import { createBarsView, type BarsActions, type BarsView, type FooterStatus } from './render';
 import { SLOTS } from './slots';
 
 const MIN_CHECK_GAP_MS = 200;
 
 export interface MountState {
   rows: BarRow[];
+  status: FooterStatus;
   positions: Record<PositionId, boolean>;
 }
 
@@ -23,7 +24,9 @@ export class Mounts {
   constructor(
     private readonly root: Document,
     /** Extra work to run on the same throttled DOM checks (e.g. the settings entry). */
-    private readonly onCheck: () => void = () => {},
+    private readonly onCheck: () => void,
+    /** What the footer buttons under the bars do. */
+    private readonly actions: BarsActions,
   ) {}
 
   start(): void {
@@ -38,7 +41,7 @@ export class Mounts {
 
   render(state: MountState): void {
     this.state = state;
-    for (const view of this.views.values()) view.update(state.rows);
+    for (const view of this.views.values()) view.update(state.rows, state.status);
     this.ensure();
   }
 
@@ -70,13 +73,39 @@ export class Mounts {
       const point = slot.find(this.root);
       if (!point) continue;
       if (!view) {
-        view = createBarsView();
-        view.update(state.rows);
+        view = createBarsView(this.actions);
+        view.update(state.rows, state.status);
         this.views.set(slot.id, view);
       }
       const inPlace =
         view.host.parentElement === point.parent && view.host.nextElementSibling === point.before;
       if (!inPlace) point.parent.insertBefore(view.host, point.before);
+      if (slot.snugTo) snug(view.host, point.before, slot.snugTo);
     }
   }
+}
+
+/** Gap left between our block and the element below it (see Slot.snugTo). */
+const SNUG_GAP_PX = 2;
+/** Never pull up further than this, in case a measurement is off. */
+const MAX_SNUG_PX = 16;
+
+/**
+ * claude.ai's own spacing above the element we sit on top of would leave a gap
+ * under our footer. Measures it and pulls the element up with a negative margin.
+ */
+function snug(host: HTMLElement, before: Element, selector: string): void {
+  const target = before.matches(selector) ? before : before.querySelector(selector);
+  if (!target || host.hidden) return;
+  const targetBox = target.getBoundingClientRect();
+  const hostBox = host.getBoundingClientRect();
+  if (targetBox.height === 0 || hostBox.height === 0) return; // Not laid out (e.g. collapsed).
+  const current = parseFloat(host.style.marginBottom) || 0;
+  const gap = targetBox.top - hostBox.bottom;
+  const next = Math.max(-MAX_SNUG_PX, Math.min(0, current - (gap - SNUG_GAP_PX)));
+  if (Math.abs(next - current) < 0.5) return;
+  host.style.marginBottom = `${next}px`;
+  // The element below now overlaps our margin: keep our buttons on top and clickable.
+  host.style.position = 'relative';
+  host.style.zIndex = '1';
 }

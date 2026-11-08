@@ -8,7 +8,16 @@ export type Message =
   /** Popup or options page → content: fetch usage now, ignoring the interval. */
   | { type: 'refreshNow' }
   /** Settings (also inside claude.ai) → background: open the help page in a new tab. */
-  | { type: 'openHelp' };
+  | { type: 'openHelp' }
+  /** Popup → content: which usage entry does this tab show? Answers its storage key. */
+  | { type: 'currentOrg' }
+  /** Content → background: this tab shows the entry under `key`; badge it for this tab. */
+  | { type: 'tabOrg'; key: string };
+
+/** Storage keys are hashes (see orgKey) or fixed words like "no-org". */
+export function isUsageKey(value: unknown): value is string {
+  return typeof value === 'string' && /^[0-9a-z-]{1,32}$/.test(value);
+}
 
 export function isMessage(value: unknown): value is Message {
   if (typeof value !== 'object' || value === null) return false;
@@ -16,8 +25,10 @@ export function isMessage(value: unknown): value is Message {
   return (
     (type === 'barsTarget' &&
       typeof (value as { targetElementId?: unknown }).targetElementId === 'number') ||
+    (type === 'tabOrg' && isUsageKey((value as { key?: unknown }).key)) ||
     type === 'openSettings' ||
     type === 'refreshNow' ||
-    type === 'openHelp'
+    type === 'openHelp' ||
+    type === 'currentOrg'
   );
 }

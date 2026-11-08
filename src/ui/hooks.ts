@@ -1,7 +1,8 @@
 // Shared state hooks for extension pages. storage.local is the source of truth;
 // pages update optimistically and re-read on storage changes.
 
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { createContext } from 'preact';
+import { useCallback, useContext, useEffect, useState } from 'preact/hooks';
 import type { OrgUsage, UsageSnapshot } from '../shared/model';
 import { normalizeSettings, type Settings } from '../shared/settings';
 import { readSettings, SETTINGS_KEY, updateSettings } from '../storage/settings';
@@ -46,24 +47,35 @@ export function useSettings(): [Settings | null, (change: Change) => void] {
   return [settings, update];
 }
 
-/** Fetch state of the most recently updated organization. */
+/**
+ * Which stored organization a page shows. Null means the most recently updated
+ * one. Inside claude.ai it is the tab's own org; the popup asks the active tab.
+ * This matters with containers, where tabs can be logged in to different accounts.
+ */
+export const UsageKey = createContext<() => Promise<string | null>>(() => Promise.resolve(null));
+
+/** Fetch state of the organization chosen by UsageKey. */
 export function useUsageEntry(): OrgUsage | null {
   const [entry, setEntry] = useState<OrgUsage | null>(null);
   const [error, report] = useAsyncError();
+  const getKey = useContext(UsageKey);
   const load = useCallback(
     () =>
-      void readUsage().then(
-        ({ store, lastOrg }) => setEntry(lastOrg ? (store[lastOrg] ?? null) : null),
+      void Promise.all([readUsage(), getKey().catch(() => null)]).then(
+        ([{ store, lastOrg }, own]) => {
+          const key = own ?? lastOrg;
+          setEntry(key ? (store[key] ?? null) : null);
+        },
         report,
       ),
-    [report],
+    [report, getKey],
   );
   useStorageKey(USAGE_KEY, load);
   if (error) throw error;
   return entry;
 }
 
-/** Snapshot of the most recently updated organization. */
+/** Snapshot of the organization chosen by UsageKey. */
 export function useSnapshot(): UsageSnapshot | null {
   return useUsageEntry()?.snapshot ?? null;
 }

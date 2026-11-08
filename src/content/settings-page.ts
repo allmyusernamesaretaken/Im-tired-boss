@@ -214,10 +214,14 @@ export class SettingsPage {
     const dialog = this.root.querySelector(SETTINGS_SELECTORS.dialog);
     if (!dialog) {
       this.reset();
-      // Opened with our route but claude.ai did not open the dialog: open it via a known route.
       const hash = this.root.location.hash;
-      if (this.pending && (hash === SETTINGS_ROUTE || !hash.startsWith('#settings/'))) {
-        this.openDialogRoute();
+      if (this.pending) {
+        // Opened with our route but claude.ai did not open the dialog: open it via a known route.
+        if (hash === SETTINGS_ROUTE || !hash.startsWith('#settings/')) this.openDialogRoute();
+      } else if (hash === SETTINGS_ROUTE) {
+        // The dialog was closed. claude.ai only clears its own routes, so ours would
+        // stay in the address and a reload would open the settings again.
+        this.clearRoute();
       }
       return;
     }
@@ -259,6 +263,15 @@ export class SettingsPage {
     const { location, defaultView } = this.root;
     if (location.hash === SETTINGS_ROUTE || !defaultView) return;
     const url = location.pathname + location.search + SETTINGS_ROUTE;
+    defaultView.history.replaceState(defaultView.history.state, '', url);
+  }
+
+  /** Removes our address again, also without a navigation. */
+  private clearRoute(): void {
+    const { location, defaultView } = this.root;
+    if (!defaultView) return;
+    flag(this.root, false);
+    const url = location.pathname + location.search;
     defaultView.history.replaceState(defaultView.history.state, '', url);
   }
 

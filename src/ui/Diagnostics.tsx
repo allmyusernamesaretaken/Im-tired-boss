@@ -3,25 +3,19 @@
 
 import { t } from '../shared/i18n';
 import { useEffect, useState } from 'preact/hooks';
-import type { OrgUsage } from '../shared/model';
 import { DIAGNOSTICS_KEY, readDiagnostics, type Diagnostics as Diag } from '../storage/diagnostics';
-import { readUsage, USAGE_KEY } from '../storage/usage';
+import { useUsageEntry } from './hooks';
 
 const time = (ms: number | null) => (ms ? new Date(ms).toLocaleTimeString() : '–');
 
 export function Diagnostics() {
   const [diag, setDiag] = useState<Diag | null>(null);
-  const [entry, setEntry] = useState<OrgUsage | null>(null);
+  const entry = useUsageEntry();
 
   useEffect(() => {
-    const refresh = () => {
-      void readDiagnostics().then(setDiag);
-      void readUsage().then(({ store, lastOrg }) =>
-        setEntry(lastOrg ? (store[lastOrg] ?? null) : null),
-      );
-    };
+    const refresh = () => void readDiagnostics().then(setDiag);
     const onChanged = (changes: Record<string, browser.storage.StorageChange>, area: string) => {
-      if (area === 'local' && (DIAGNOSTICS_KEY in changes || USAGE_KEY in changes)) refresh();
+      if (area === 'local' && DIAGNOSTICS_KEY in changes) refresh();
     };
     refresh();
     browser.storage.onChanged.addListener(onChanged);

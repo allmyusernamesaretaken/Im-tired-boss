@@ -19,6 +19,8 @@ export interface InsertPoint {
 export interface Slot {
   id: PositionId;
   find(root: ParentNode): InsertPoint | null;
+  /** Element below the block that it should sit right on top of, without claude.ai's gap. */
+  snugTo?: string;
 }
 
 /** The direct child of `container` that contains `node`. */
@@ -38,7 +40,11 @@ function beforeChildContaining(root: ParentNode, selector: string): InsertPoint 
 export const SLOTS: readonly Slot[] = [
   // Right above the "New" row: below the title bar when expanded,
   // below logo and mode switch in the collapsed peek panel.
-  { id: 'top', find: (root) => beforeChildContaining(root, SELECTORS.newChatRow) },
+  {
+    id: 'top',
+    find: (root) => beforeChildContaining(root, SELECTORS.newChatRow),
+    snugTo: SELECTORS.newChatRow,
+  },
   // Right above the profile button.
   { id: 'bottom', find: (root) => beforeChildContaining(root, SELECTORS.userMenu) },
   // No separate slot for a collapsed sidebar: claude.ai then only shows a

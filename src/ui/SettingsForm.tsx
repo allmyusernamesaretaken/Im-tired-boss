@@ -39,6 +39,7 @@ export function SettingsForm(props: {
   return (
     <div class="form">
       <Section
+        id="position"
         title={t('sectionPosition', 'Position')}
         onReset={() => update((c) => ({ ...c, positions: copy(DEFAULTS.positions) }))}
       >
@@ -65,6 +66,7 @@ export function SettingsForm(props: {
       </Section>
 
       <Section
+        id="bars"
         title={t('sectionBars', 'Bars')}
         onReset={() => update((c) => ({ ...c, bars: copy(DEFAULTS.bars) }))}
       >
@@ -99,6 +101,8 @@ export function SettingsForm(props: {
         <ExpertForm settings={s} snapshot={snapshot} update={update} />
       ) : (
         <Section
+          id="text"
+          defaultOpen={false}
           title={t('sectionText', 'Text')}
           onReset={() => update((c) => ({ ...c, easy: copy(DEFAULTS.easy) }))}
         >
@@ -153,6 +157,8 @@ export function SettingsForm(props: {
       )}
 
       <Section
+        id="color"
+        defaultOpen={false}
         title={t('sectionColor', 'Color')}
         onReset={() => update((c) => ({ ...c, color: copy(DEFAULTS.color) }))}
       >
@@ -214,6 +220,8 @@ export function SettingsForm(props: {
       </Section>
 
       <Section
+        id="more"
+        defaultOpen={false}
         title={t('sectionMore', 'More')}
         onReset={() =>
           update((c) => {
@@ -245,7 +253,7 @@ export function SettingsForm(props: {
         </Row>
       </Section>
 
-      <Section title={t('sectionExpert', 'Expert mode')}>
+      <Section id="expert" defaultOpen={false} title={t('sectionExpert', 'Expert mode')}>
         <Row
           label={t('expertMode', 'Expert mode')}
           description={t('expertModeDesc', 'Write your own templates for the text above the bars')}

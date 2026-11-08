@@ -77,6 +77,26 @@ describe('fetcher', () => {
       `/api/organizations/${ORG_B}/usage`,
     ]);
   });
+  it("never shows or skips on another container's org updated last", async () => {
+    const { checkUsage: tick, currentOrgKey } = await load();
+    const { orgKey } = await import('../src/shared/usage');
+    // Another container (other account) just stored fresh data for ORG_A.
+    local = {
+      usage: {
+        [orgKey(ORG_A)]: { status: 'ok', fetchedAt: Date.now(), failures: 0, snapshot: null },
+      },
+      usageLastOrg: orgKey(ORG_A),
+    };
+    fetchMock.mockImplementation((path) =>
+      path === '/api/organizations' ? json([{ uuid: ORG_B, capabilities: ['chat'] }]) : json(USAGE),
+    );
+    setCookie(ORG_B);
+    expect(currentOrgKey()).toBe(orgKey(ORG_B));
+    await tick();
+    expect(paths()).toEqual(['/api/organizations', `/api/organizations/${ORG_B}/usage`]);
+    expect(currentOrgKey()).toBe(orgKey(ORG_B));
+  });
+
   it('"Update now" waits for a running check, then fetches anyway', async () => {
     const { checkUsage: tick, refreshNow } = await load();
     fetchMock.mockImplementation((path) =>

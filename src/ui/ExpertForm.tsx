@@ -77,6 +77,7 @@ export function ExpertForm(props: {
   return (
     <>
       <Section
+        id="expert-all"
         title={t('sectionAllBars', 'All bars')}
         onReset={() =>
           update((c) => {
@@ -125,6 +126,8 @@ export function ExpertForm(props: {
       </Section>
 
       <Section
+        id="expert-per-bar"
+        defaultOpen={false}
         title={t('sectionPerBar', 'Per bar')}
         onReset={() =>
           update((c) => {
